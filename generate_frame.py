@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import utils
+from . import utils
 
 beta = 1.
 sigma_w = 10. # counts
@@ -10,10 +10,27 @@ rows = 32
 
 times, flattened_frame, frame = utils.generate_detector_ts(beta, sigma_w, sigma_flicker, columns = columns, rows = rows)
 
-plt.title('Generate simulated 1/f image')
+plt.title('Generated simulated 1/f image')
 plt.imshow(frame)
 plt.show()
 
+times, flattened_frame, frame, wn_frame = utils.generate_detector_ts(beta, sigma_w, sigma_flicker, columns = columns, rows = rows, return_white_noise = True)
+
+plt.subplot(311)
+plt.title('Only white-noise part')
+plt.imshow(wn_frame)
+
+plt.subplot(312)
+plt.title('Only 1/f part')
+plt.imshow(frame - wn_frame)
+
+plt.subplot(313)
+plt.title('White-noise + 1/f')
+plt.imshow(frame)
+
+plt.show()
+
+plt.title('Flattened time-series of wn + 1/f')
 plt.plot(times, flattened_frame)
 plt.show()
 
