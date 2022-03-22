@@ -1,7 +1,7 @@
 import numpy as np
 from stochastic.processes.noise import ColoredNoise
 
-def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 512, pixel_time = 10, jump_time = 120, return_image = True, return_time = True):
+def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 512, pixel_time = 10, jump_time = 120, return_image = True, return_time = True, return_white_noise = False):
     """
     Detector generating function | Author: Nestor Espinoza (nespinoza@stsci.edu)
     -----------------------------------------------------------------------------
@@ -30,6 +30,8 @@ def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 51
         If True, returns an image with the simulated values. Default is False.
     return_time : boolean 
         If True, returns times as well. Default is False.
+    return_white_noise : boolean
+        If True, returns the white-noise part of the image separately
     Returns
     -------
     times : `numpy.array`
@@ -66,8 +68,9 @@ def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 51
     # Set process standard-deviation to input sigma:
     time_series = sigma_flicker * (time_series / np.sqrt(np.var(time_series)) )
 
-    # Add poisson noise:
-    time_series = time_series + np.random.normal(0., sigma_w, len(time_series))
+    # Add normal noise:
+    normal_noise = np.random.normal(0., sigma_w, len(time_series))
+    time_series = time_series + normal_noise
 
     if not return_image:
         if not return_time:
@@ -81,10 +84,27 @@ def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 51
         image = time_series.reshape(image.shape)
 
         if return_time:
+
             # Return all:
-            return times, time_series, image.transpose()
+            if not return_white_noise:
+
+                return times, time_series, image.transpose()
+
+            else:
+
+                wn_image = normal_noise.reshape(image.shape)
+                return times, time_series, image.transpose(), wn_image.transpose()
+
         else:
-            return time_series, image.transpose()
+
+            if not return_white_noise:
+
+                return time_series, image.transpose()
+
+            else:
+
+                wn_image = normal_noise.reshape(image.shape)
+                return time_series, image.transpose(), wn_image.transpose()
 
 def gen_ramp(slope, ngroups, frametime = 0.90200, read_noise = 1., bkg = 0., gain = 1.42, white_noise = False):
     """
