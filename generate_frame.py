@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import utils
+from . import utils
 
 beta = 1.
 sigma_w = 10. # counts
