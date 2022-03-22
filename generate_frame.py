@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from . import utils
+from roof import utils
 
 beta = 1.
 sigma_w = 10. # counts
