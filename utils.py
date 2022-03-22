@@ -1,7 +1,7 @@
 import numpy as np
 from stochastic.processes.noise import ColoredNoise
 
-def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 512, pixel_time = 10, jump_time = 120, return_image = False, return_time = False):
+def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 512, pixel_time = 10, jump_time = 120, return_image = True, return_time = True):
     """
     Detector generating function | Author: Nestor Espinoza (nespinoza@stsci.edu)
     -----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ def generate_detector_ts(beta, sigma_w, sigma_flicker, columns = 2048, rows = 51
         else:
             return time_series, image.transpose()
 
-def gen_ramp(slope, read_noise, ngroups, bkg = 0., gain = 1.42, white_noise = False):
+def gen_ramp(slope, ngroups, frametime = 0.90200, read_noise = 1., bkg = 0., gain = 1.42, white_noise = False):
     """
     Ramp generator function | Author: Nestor Espinoza (nespinoza@stsci.edu) & Mike Reagan
     -------------------------------------------------------------------------------------
@@ -118,12 +118,15 @@ def gen_ramp(slope, read_noise, ngroups, bkg = 0., gain = 1.42, white_noise = Fa
     :param slope: (float)                         
         Slope of the ramp in e-/s.
         
-    :param read_noise: (float)
-        Read-noise in ADUs of the detector.
-        
     :param ngroups: (int)
         Number of groups in the ramp.
             
+    :param frametime: (float)
+        Frame time in seconds
+
+    :param read_noise: (float)
+        Read-noise in ADUs of the detector.
+
     :param bkg: (optional, float)
         Value of the *detector* background, if one wants T(0) distinct from zero. Set to zero by default.
         
